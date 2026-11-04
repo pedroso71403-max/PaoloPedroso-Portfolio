@@ -1,6 +1,6 @@
 # Paolo Pedroso Portfolio
 
-React portfolio built with Vite. Page content and styles are organized under `src/content` and `src/styles`; media is in `public/assets`. Portfolio artwork is in `public/assets/portfolio`, and the profile photo is in `public/assets/profile`.
+Static portfolio built with Vite. The homepage is `index.html`; the highlight reel and 2024 works are at `/highlight/` and `/works/`. Images and the highlight video are in `public/`.
 
 ## Run locally
 
@@ -16,4 +16,4 @@ npm run build
 npm run preview
 ```
 
-The app routes are `/` (Portfolio), `/works`, `/behind`, and `/highlight`.
+The pages are `/` (Portfolio), `/highlight/` (My Highlight), and `/works/` (2024 Works).
