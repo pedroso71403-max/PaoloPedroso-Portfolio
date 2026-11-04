@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import portfolioContent from "./content/portfolio.html?raw";
-import highlightContent from "./content/highlight.html?raw";
 import PortfolioPage from "./components/PortfolioPage.jsx";
-import HighlightPage from "./components/HighlightPage.jsx";
+import ExportPage from "./components/ExportPage.jsx";
 import "./styles/portfolio.css";
-import "./styles/highlight.css";
 
 function currentRoute() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
@@ -16,8 +14,23 @@ export default function App() {
 
   useEffect(() => {
     const handlePopState = () => setRoute(currentRoute());
+    const handlePageNavigation = (event) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type !== "portfolio:navigate") return;
+      const path = event.data.path;
+      if (!["/", "/works", "/behind", "/highlight"].includes(path)) return;
+      if (path !== window.location.pathname) {
+        window.history.pushState(null, "", path);
+      }
+      setRoute(path);
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    };
     window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+    window.addEventListener("message", handlePageNavigation);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("message", handlePageNavigation);
+    };
   }, []);
 
   function navigate(path) {
@@ -29,14 +42,22 @@ export default function App() {
   }
 
   useEffect(() => {
-    if (route === "/works") document.title = "Selected Work — Paolo Pedroso";
+    if (route === "/works") document.title = "2024 Works — Paolo Pedroso";
     else if (route === "/behind") document.title = "Behind the Work — Paolo Pedroso";
     else if (route === "/highlight") document.title = "My Highlight — Paolo Pedroso";
     else document.title = "Paolo Pedroso";
   }, [route]);
 
+  if (route === "/") {
+    return <ExportPage src="/exports/portfolio.html" title="Paolo Pedroso portfolio" />;
+  }
+
+  if (route === "/works") {
+    return <ExportPage src="/exports/garten-und-ich.html" title="Garten & Ich — 2024 Works" />;
+  }
+
   if (route === "/highlight") {
-    return <HighlightPage source={highlightContent} navigate={navigate} />;
+    return <ExportPage src="/exports/highlight.html" title="Paolo Pedroso highlight" />;
   }
 
   const pageId = {
